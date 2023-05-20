@@ -56,6 +56,9 @@ async function run() {
         if (req.query?.email) {
             query = { email: req.query.email }
         }
+        else {
+            res.status(404).send({ error: true, message: 'Email not found' })
+        }
 
         const val = sortValue == 'descending' ? -1 : 1;
 
