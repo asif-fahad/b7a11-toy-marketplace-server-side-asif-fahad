@@ -28,19 +28,36 @@ async function run() {
         const toysCollection = client.db('toyDB').collection('toys');
 
 
-        app.get('/toys', async (req, res) => {
-            const cursor = toysCollection.find();
-            const result = await cursor.toArray();
+
+        const indexKeys = { name: 1 };
+        const indexOptions = { name: "name" };
+        const result = await toysCollection.createIndex(indexKeys, indexOptions);
+
+        app.get('toysSearch/:text', async (req, res) => {
+            const searchText = req.params.text;
+
+            const result = await toysCollection.find({
+                $set: [
+                    { name: { $regex: searchText, $options: "i" } }
+                ]
+            }).toArray();
             res.send(result);
         })
 
         app.get('/toys', async (req, res) => {
+            const cursor = toysCollection.find().limit(20);
+            const result = await cursor.toArray();
+            res.send(result);
+        })
 
-            let query = {};
-            if (req.query?.email) {
-                query = { email: req.query.email }
-            }
-            const result = await toysCollection.find(query).toArray();
+
+        app.get('/toys/:email', async (req, res) => {
+            // console.log(req.query.email)
+            // let query = {};
+            // if (req.query?.email) {
+            //     query = { email: req.query.email }
+            // }
+            const result = await toysCollection.find({ email: req.params.email }).toArray();
             res.send(result);
         })
 
@@ -54,7 +71,7 @@ async function run() {
 
         app.post('/toys', async (req, res) => {
             const newToy = req.body;
-            console.log(newToy);
+            // console.log(newToy);
             const result = await toysCollection.insertOne(newToy);
             res.send(result);
         })
