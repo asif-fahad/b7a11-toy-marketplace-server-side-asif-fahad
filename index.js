@@ -27,16 +27,18 @@ async function run() {
     const indexOptions = { name: "name" };
     const result = await toysCollection.createIndex(indexKeys, indexOptions);
 
-    app.get('toysSearch/:text', async (req, res) => {
-        const searchText = req.params.text;
 
-        const result = await toysCollection.find({
-            $set: [
-                { name: { $regex: searchText, $options: "i" } }
-            ]
-        }).toArray();
+    app.get("/getToysByText/:text", async (req, res) => {
+        const text = req.params.text;
+        const result = await toysCollection
+            .find({
+                $or: [
+                    { name: { $regex: text, $options: "i" } }
+                ],
+            })
+            .toArray();
         res.send(result);
-    })
+    });
 
     app.get('/toys', async (req, res) => {
         const cursor = toysCollection.find().limit(20);
