@@ -51,13 +51,19 @@ async function run() {
         })
 
 
-        app.get('/toys/:email', async (req, res) => {
+        app.get('/toys', async (req, res) => {
+            const sortValue = req.query?.sort;
+            // console.log(sortValue);
+
             // console.log(req.query.email)
-            // let query = {};
-            // if (req.query?.email) {
-            //     query = { email: req.query.email }
-            // }
-            const result = await toysCollection.find({ email: req.params.email }).toArray();
+            let query = {};
+            if (req.query?.email) {
+                query = { email: req.query.email }
+            }
+
+            const val = sortValue == 'descending' ? -1 : 1;
+
+            const result = await toysCollection.find(query).sort({ price: val }).toArray();
             res.send(result);
         })
 
