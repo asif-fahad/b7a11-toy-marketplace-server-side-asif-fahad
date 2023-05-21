@@ -26,14 +26,14 @@ async function run() {
 
     try {
         // Connect the client to the server	(optional starting in v4.7)
-
+        // await client.connect();
 
 
         const toysCollection = client.db('toyDB').collection('toys');
 
-        const indexKeys = { name: 1 };
-        const indexOptions = { name: "name" };
-        const result = await toysCollection.createIndex(indexKeys, indexOptions);
+        // const indexKeys = { name: 1 };
+        // const indexOptions = { name: "name" };
+        // const result = await toysCollection.createIndex(indexKeys, indexOptions);
 
         app.get('/toys', async (req, res) => {
             const cursor = toysCollection.find().limit(20);
