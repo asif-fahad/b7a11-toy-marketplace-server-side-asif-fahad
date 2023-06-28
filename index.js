@@ -41,6 +41,11 @@ async function run() {
             res.send(result);
         })
 
+        app.get('/filter/:category', async (req, res) => {
+            const result = await toysCollection.find({ subCategory: req.params.category }).toArray();
+            res.send(result);
+        })
+
         app.get('/toysEmailSort', async (req, res) => {
             const sortValue = req.query?.sort;
             // console.log(sortValue);
